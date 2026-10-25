@@ -1,4 +1,5 @@
 #include "hdmi_cec.h"
+#include <cinttypes>
 #include "esphome/core/application.h"
 #include "esphome/core/log.h"
 
@@ -281,7 +282,7 @@ bool HDMICEC::send(uint8_t source, uint8_t destination, const std::vector<uint8_
           ESP_LOGW(TAG, "HDMICEC::send(): attempt %d bus-wait timeout (200ms), retrying", i + 1);
           break;
         }
-        ESP_LOGV(TAG, "HDMICEC::send(): waiting %u usec for bus free period", delay);
+        ESP_LOGV(TAG, "HDMICEC::send(): waiting %" PRIu32 " usec for bus free period", delay);
         if (delay >= YIELD_INTERVAL_US) {
           delay_microseconds_safe(YIELD_INTERVAL_US);
           // yield() lets other tasks run but does not reset the task watchdog; only the
