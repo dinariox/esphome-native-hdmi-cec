@@ -139,7 +139,8 @@ async def to_code(config):
         cv.Optional(CONF_SOURCE): cv.templatable(cv.int_range(min=0, max=15)),
         cv.Required(CONF_DESTINATION): cv.templatable(cv.int_range(min=0, max=15)),
         cv.Required(CONF_DATA): cv.templatable(validate_data_array)
-    }
+    },
+    synchronous=True,
 )
 async def send_action_to_code(config, action_id, template_args, args):
     parent = await cg.get_variable(config[CONF_PARENT])
