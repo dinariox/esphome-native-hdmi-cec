@@ -452,12 +452,11 @@ void IRAM_ATTR HDMICEC::gpio_intr_(HDMICEC *self) {
 
     if (self->recv_ack_queued_ && !self->monitor_mode_) {
       self->recv_ack_queued_ = false;
-      {
-        InterruptLock interrupt_lock;
-        self->set_pin_output_low();
-        delay_microseconds_safe(LOW_BIT_US);
-        self->set_pin_input_high();
-      }
+      // No InterruptLock in an ISR: on RISC-V its destructor drops the IRQ threshold, letting preempted ISRs re-enter.
+      self->isr_pin_.digital_write(false);
+      self->isr_pin_.pin_mode(OUTPUT_MODE_FLAGS);
+      delay_microseconds_safe(LOW_BIT_US);
+      self->isr_pin_.pin_mode(INPUT_MODE_FLAGS);
     }
     return;
   }
